@@ -41,7 +41,7 @@ function Register(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch('http://localhost:8080/auth/register', {
+        fetch('https://anonymous-messaging-app-rouge.vercel.app/?vercelToolbarCode=pIjYavbq-1pCvxk/auth/register', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'

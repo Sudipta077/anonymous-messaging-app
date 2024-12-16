@@ -40,7 +40,7 @@ function Login(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch('http://localhost:8080/auth/login', {
+        fetch('https://anonymous-messaging-app-rouge.vercel.app/?vercelToolbarCode=pIjYavbq-1pCvxk/auth/login', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
