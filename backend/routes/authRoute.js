@@ -7,10 +7,10 @@ require('dotenv').config();
 
 
 router.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, username, password } = req.body;
 
     try {
-        db.query(`select * from users where email = ?`, [email], (error, response) => {
+        db.query(`select * from users where username = ?`, [username], (error, response) => {
             if (error) {
                 console.log("Error is :", error);
                 return res.status(500).json({ status: 500, message: "Error Occurred" });
@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
 
                 bcrypt.hash(password, 2, function (err, hashpass) {
 
-                    db.query(`insert into users (name,email,password) values (?,?,?)`, [name, email, hashpass], (error, response) => {
+                    db.query(`insert into users (name,username,password) values (?,?,?)`, [name, username, hashpass], (error, response) => {
                         if (error) {
                             console.log("Error while registering  : ", error);
                             return res.status(501).error(error);
@@ -46,9 +46,9 @@ router.post('/register', async (req, res) => {
 })
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body
+    const { username, password } = req.body
     try {
-        db.query(`select * from users where email =?`, [email], (error, response) => {
+        db.query(`select * from users where username =?`, [username], (error, response) => {
             if (error) {
                 console.log("Error Occurred : ", error);
             }

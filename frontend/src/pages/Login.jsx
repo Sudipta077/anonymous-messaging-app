@@ -24,7 +24,7 @@ function Login(props) {
     const navigate = useNavigate();
 
     const [form, setForm] = useState({
-        email: "",
+        username: "",
         password: ""
     });
     const [eye, setEye] = useState(false);
@@ -40,7 +40,7 @@ function Login(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch('https://anonymous-messaging-app-rouge.vercel.app/?vercelToolbarCode=pIjYavbq-1pCvxk/auth/login', {
+        fetch('http://localhost:8080/auth/login', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
@@ -86,8 +86,8 @@ function Login(props) {
 
 
                     <div className='relative mt-5'>
-                        <label htmlFor="email" className='px-1 font-myfont2 absolute top-[-10px] left-4 text-lg sm:text-xl text-secondary bg-primary'>Email</label>
-                        <input required onChange={handleChange} name="email" type="email" className=" mt-2 focus:outline-none w-full rounded p-2 text-base sm:text-xl text-secondary bg-primary border border-secondary" />
+                        <label htmlFor="username" className='px-1 font-myfont2 absolute top-[-10px] left-4 text-lg sm:text-xl text-secondary bg-primary'>Username</label>
+                        <input required onChange={handleChange} name="username" type="text" className=" mt-2 focus:outline-none w-full rounded p-2 text-base sm:text-xl text-secondary bg-primary border border-secondary" />
                     </div>
 
                     <div className="relative mt-5">
