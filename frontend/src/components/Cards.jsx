@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { MdOutlineClose } from "react-icons/md";
 import { MdDownload } from "react-icons/md";
 import { toPng } from 'html-to-image';
-
+import { motion } from "framer-motion";
 function Cards({ data }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const modalRef = useRef(null);
@@ -40,16 +40,27 @@ function Cards({ data }) {
     return (
         <>
             {/* Card */}
-            <div
+            <motion.div
+
+             
                 onClick={handleCardClick}
-                className={`bg-secondary p-5 w-full sm:w-72 h-24 sm:h-52 overflow-hidden text-center text-primary rounded flex flex-wrap items-center hover:cursor-pointer shadow-md transition-transform transform hover:scale-105 duration-300 ${
+                className={`shadow-slate-800 relative bg-secondary p-5 w-full sm:w-72 h-24 sm:h-52 overflow-hidden text-center text-primary rounded flex flex-wrap items-center hover:cursor-pointer shadow-md transition-transform transform hover:scale-105 duration-300 ${
                     isModalOpen ? 'hidden' : ''
                 }`}
+                variants={{
+                    hidden: { opacity: 0, y: 50 },
+                    visible: { opacity: 1, y: 0, scale: 1 },
+                }}
+
+                whileHover ={{scale:1.05}}
             >
                 <h1 className='m-auto overflow-hidden w-full text-primary text-lg sm:text-2xl font-myfont2 line-clamp-3'>
                     {data.message}
                 </h1>
-            </div>
+
+                <div className='bg-secondary w-full absolute bottom-0 left-0 h-4 sm:h-12 opacity-55 backdrop-blur-lg'></div>
+
+            </motion.div>
 
             {isModalOpen && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">

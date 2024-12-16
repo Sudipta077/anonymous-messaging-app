@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { data, useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Message(props) {
     const [text, setText] = useState("");
@@ -9,7 +10,21 @@ function Message(props) {
     const [suggestion, setSuggestion] = useState("");
     console.log(text);
 
-    const handleSubmit = async () => {
+
+        const notify = (message) => toast(message, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            closeButton: false,
+        });
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         try {
             fetch(`http://localhost:8080/user/message/${params.id}`, {
                 method: 'POST',
@@ -21,8 +36,10 @@ function Message(props) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 200) {
+                        notify(data.message);
                         console.log("ok->", data.message);
                     } else {
+                        notify(data.message);
                         console.log("Error occurred : ", data);
                     }
                 })
@@ -70,17 +87,17 @@ function Message(props) {
 
     return (
         <div className='bg-primary min-h-screen grid place-content-center px-2'>
-            <form onSubmit={handleSubmit} className='flex gap-2'>
+            <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-2'>
                 <input
                     required
                     type="text"
-                    className='h-14 w-96 focus:outline-none text-secondary bg-primary rounded px-2 py-1 border border-secondary'
+                    className='sm:h-full h-24 w-96 focus:outline-none text-secondary bg-primary rounded px-2 py-1 border border-secondary font-myfont2'
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     placeholder='Write message'
-                    maxlength="100"
+                    maxLength="100"
                 />
-                <button type='submit' className='bg-secondary text-primary h-full font-myfont2'>Send</button>
+                <button type='submit' className='bg-secondary text-primary w-full sm:w-24 sm:h-full font-myfont2'>Send</button>
             </form>
 
 
@@ -88,9 +105,9 @@ function Message(props) {
             <div className='flex flex-col-reverse sm:flex-row justify-between items-center gap-x-5 '>
 
                 {suggestion ?
-                    <p className='mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl' onClick={handleCopy}>{suggestion}</p>
+                    <p className='mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl w-96' onClick={handleCopy}>{suggestion}</p>
                     :
-                    <>Loading...</>
+                    <span className="mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl ">Loading...</span>
                 }
 
                 <h1
@@ -103,6 +120,7 @@ function Message(props) {
 
 
             </div>
+            <ToastContainer/>
         </div>
     );
 }

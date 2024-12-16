@@ -35,11 +35,11 @@ router.post('/message/:id', (req, res) => {
     db.query(`insert into messages (message,user_id) values (?,?)`, [message.text , params.id], (err, result) => {
         if (err) {
             console.log("Error 1 : ", err)
-            return res.status(500).json({ status: 500, message: err });
+            return res.status(400).json({ status: 400, message: "User does not exist !" });
         }
         else {
             console.log("Successfully added message.", result);
-            res.status(200).json({ status: 200, message: "Successfully added." });
+            res.status(200).json({ status: 200, message: "Successfully sent message." });
         }
     })
 
