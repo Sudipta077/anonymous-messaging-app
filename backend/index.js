@@ -23,7 +23,7 @@ app.use('/auth', authRoute);
 app.use('/user', userRoute);
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${PORT}`);
   });
 
 module.exports = app;
