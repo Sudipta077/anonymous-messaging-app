@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     const token = req.headers['authorization']?.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const { username } = decoded;
         const user = await User.findOne({ username });
 
@@ -62,7 +62,7 @@ router.get('/message/getAll', async (req, res) => {
 
     try {
 
-        const decoded = jwt.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const { username } = decoded;
         const user = await User.findOne({ username });
         const messages = await Message.find({ username: user.username });
@@ -82,7 +82,7 @@ router.get('/message/getAll', async (req, res) => {
 router.post('/deleteAll', async (req, res) => {
     try {
         const token = req.headers['authorization']?.split(' ')[1];
-        const decoded = jwt.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
         const { username } = decoded;
 
         const result = await Message.deleteMany({ username: username });
@@ -111,7 +111,7 @@ router.post('/deleteAll', async (req, res) => {
 // Google Gemini API Integration
 router.get('/api/gemini', async (req, res) => {
     try {
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const prompt = "Generate a new, simple, friendly question about someone's personal life, under 10 words";

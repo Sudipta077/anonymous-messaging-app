@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
 
         // Generate JWT token
         const payload = { username: user.username };
-        const token = jwt.sign(payload,SECRET_KEY);
+        const token = jwt.sign(payload, process.env.SECRET_KEY);
 
         res.status(200).json({ status: 200, message: "Successfully logged in", token });
     } catch (err) {
