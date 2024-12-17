@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "test",
-    "build": "echo 'No build step required for Express.js'"
+    "build": ""
   },
   "author": "",
   "license": "ISC",

@@ -12,7 +12,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 10000
 
 app.get('/',(req,res)=>{
     res.send("Hello")
@@ -22,6 +22,8 @@ app.get('/',(req,res)=>{
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
 
-
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 
 module.exports = app;
