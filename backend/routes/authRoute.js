@@ -1,89 +1,61 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/dbconfig');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const User = require('../models/userSchema'); // Import the Mongoose schema
 require('dotenv').config();
 
-
+// Register Endpoint
 router.post('/register', async (req, res) => {
     const { name, username, password } = req.body;
 
     try {
-        db.query(`select * from users where username = ?`, [username], (error, response) => {
-            if (error) {
-                console.log("Error is :", error);
-                return res.status(500).json({ status: 500, message: "Error Occurred" });
-            }
-            else {
+        // Check if the user already exists
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).json({ status: 400, message: "User already exists." });
+        }
 
-                if (response.length > 0) {
-                    console.log("User Already exists...:", response);
-                    return res.status(400).json({ status: 400, message: "User already exists." });
-                }
+        // Hash the password
+        const hashpass = await bcrypt.hash(password, 10);
 
-                bcrypt.hash(password, 2, function (err, hashpass) {
+        // Save the new user
+        const newUser = new User({ name, username, password: hashpass });
+        await newUser.save();
 
-                    db.query(`insert into users (name,username,password) values (?,?,?)`, [name, username, hashpass], (error, response) => {
-                        if (error) {
-                            console.log("Error while registering  : ", error);
-                            return res.status(501).error(error);
-                        }
-                        else {
-                            console.log("Successfully registered.");
-                            res.status(200).json({ status: 200, message:"Successfully registered" });
-                        }
-                    })
-
-                });
-            }
-        })
+        res.status(200).json({ status: 200, message: "Successfully registered" });
+    } catch (err) {
+        console.error("Error during registration:", err);
+        res.status(500).json({ status: 500, message: "Error occurred" });
     }
-    catch (err) {
-        console.log("ERROR is err", err);
-    }
+});
 
-})
-
+// Login Endpoint
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body
+    const { username, password } = req.body;
+
     try {
-        db.query(`select * from users where username =?`, [username], (error, response) => {
-            if (error) {
-                console.log("Error Occurred : ", error);
-            }
-            if (response.length > 0) {
+        // Find the user by username
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(400).json({ status: 400, message: "You don't have any account registered!" });
+        }
 
-                console.log(response[0].password);
+        // Compare the passwords
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ status: 401, message: "Wrong credentials!" });
+        }
 
-                bcrypt.compare(password, response[0].password, function (err, result) {
+        // Generate JWT token
+        const payload = { username: user.username };
+        const token = jwt.sign(payload, process.env.SECRET_KEY);
 
-                    if (err) {
-                        console.log(err);
-                    }
-                    if (result !== true) {
-                        return res.status(401).json({ status: 401, message: "Wrong Credential !" });
-                    }
-                    else {
-
-                        const payload = { userId: response[0].id }; 
-                        const token = jwt.sign(payload, process.env.SECRET_KEY); 
-
-                        res.status(200).json({ status: 200, message: "Succesfully logged in " ,token})
-                    }
-
-                });
-
-            }
-            else{
-                return res.status(400).json({status:400,message:"You Don't have any account registered !"})
-            }
-        })
+        res.status(200).json({ status: 200, message: "Successfully logged in", token });
+    } catch (err) {
+        console.error("Error during login:", err);
+        res.status(500).json({ status: 500, message: "Error occurred" });
     }
-    catch (err) {
-        console.log(err);
-    }
-})
-
+});
 
 module.exports = router;

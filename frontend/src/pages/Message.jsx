@@ -26,7 +26,7 @@ function Message(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            fetch(`http://localhost:8080/user/message/${params.id}`, {
+            fetch(`http://localhost:8080/user/message/${params.username}`, {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json'
@@ -37,7 +37,7 @@ function Message(props) {
                 .then(data => {
                     if (data.status === 200) {
                         notify(data.message);
-                        console.log("ok->", data.message);
+                        setText("");
                     } else {
                         notify(data.message);
                         console.log("Error occurred : ", data);
@@ -67,14 +67,23 @@ function Message(props) {
             })
                 .then(response => response.json())
                 .then(data => {
-                    setSuggestion(data);
-                    console.log(data);
+                    if (data && data.prompt) { // Assuming 'prompt' is the key you want
+                        setSuggestion(data.prompt); // Set only the string value
+                    } else {
+                        console.log("Unexpected response format: ", data);
+                        setSuggestion("No suggestions available.");
+                    }
                 })
+                .catch(err => {
+                    console.error("Error fetching suggestions: ", err);
+                    setSuggestion("Failed to load suggestions.");
+                });
+        } catch (err) {
+            console.error("Error occurred: ", err);
+            setSuggestion("Failed to load suggestions.");
         }
-        catch (err) {
-            console.log(err);
-        }
-    }
+    };
+    
 
     useEffect(() => {
         fetchSuggestions();

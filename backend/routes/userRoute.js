@@ -1,95 +1,129 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/dbconfig');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const User = require('../models/userSchema'); // User schema model
+const Message = require('../models/messageSchema'); // Message schema model
+require('dotenv').config();
 
+// Verify User Route
 router.get('/', async (req, res) => {
     const token = req.headers['authorization']?.split(' ')[1];
+
     try {
-        var decoded = jwt.verify(token, process.env.SECRET_KEY);
-        db.query(`select * from users where id =?`, [decoded.userId], (err, response) => {
-            if (err) {
-                console.log("error : ", err);
-                return res.status(400).json({ status: 400, message: "User not found" });
-            }
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const { username } = decoded;
+        const user = await User.findOne({ username });
 
-            res.status(200).json({ status: 200, message: "User verified", response });
-
-
-        })
-
-    }
-    catch (err) {
-        console.log(err);
-    }
-
-
-})
-
-router.post('/message/:id', (req, res) => {
-    const params = req.params;
-    const message = req.body;
-    console.log(params.id);
-    console.log("message-->",message.text);
-    db.query(`insert into messages (message,user_id) values (?,?)`, [message.text , params.id], (err, result) => {
-        if (err) {
-            console.log("Error 1 : ", err)
-            return res.status(400).json({ status: 400, message: "User does not exist !" });
+        if (!user) {
+            return res.status(400).json({ status: 400, message: "User not found" });
         }
-        else {
-            console.log("Successfully added message.", result);
-            res.status(200).json({ status: 200, message: "Successfully sent message." });
+
+        res.status(200).json({ status: 200, message: "User verified", user });
+    } catch (err) {
+        console.error("Error verifying user:", err);
+        return res.status(500).json({ status: 500, message: "Error verifying user" });
+    }
+});
+
+// Add Message Route
+router.post('/message/:username', async (req, res) => {
+    const { username } = req.params;
+    const { text } = req.body;
+
+    console.log("username2--->", text);
+
+
+    try {
+        const user = await User.findOne({ username });
+
+
+        if (!user) {
+            return res.status(400).json({ status: 400, message: "User does not exist!" });
         }
-    })
 
-})
+        const message = new Message({
+            message: text,
+            username: username
+        });
 
+        await message.save();
+
+        res.status(200).json({ status: 200, message: "Successfully sent message." });
+    } catch (err) {
+        console.error("Error adding message:", err);
+        return res.status(500).json({ status: 500, message: "Error adding message." });
+    }
+});
+
+// Get All Messages for a User
 router.get('/message/getAll', async (req, res) => {
-
     const token = req.headers['authorization']?.split(' ')[1];
+
     try {
 
-        var decoded = jwt.verify(token, process.env.SECRET_KEY);
-        console.log(decoded.userId)
-        db.query(`select * from messages where user_id = ?`, [decoded.userId], (err, result) => {
-            if (err) {
-                console.log(err);
-                return res.status(400).json({ status: 400, message: err })
-            }
-            else {
-                console.log("result--->",result);
-                return res.status(200).json({status:200,message:result});
-            }
-        })
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const { username } = decoded;
+        const user = await User.findOne({ username });
+        const messages = await Message.find({ username: user.username });
+
+        if (!messages.length) {
+            return res.status(404).json({ status: 404, message: "No messages found for this user." });
+        }
+
+        res.status(200).json({ status: 200, messages });
+    } catch (err) {
+        console.error("Error retrieving messages:", err);
+        return res.status(500).json({ status: 500, message: "Error retrieving messages." });
+    }
+});
+
+
+router.post('/deleteAll', async (req, res) => {
+    try {
+        const token = req.headers['authorization']?.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+        const { username } = decoded;
+
+        const result = await Message.deleteMany({ username: username });
+
+        if (result.deletedCount > 0) {
+            return res.status(200).json({status:200, message: 'All messages deleted successfully.' });
+        } else {
+            return res.status(404).json({status:404, message: 'No messages found.' });
+        }
+
+
 
 
 
     }
     catch (err) {
-        console.log(err);
-        return res.status(500).json({ status: 500, message: err });
+        console.log("Error --->", err);
     }
-
 })
 
-router.get('/api/gemini', async (req, res) => {
 
-    try{
+
+
+
+
+// Google Gemini API Integration
+router.get('/api/gemini', async (req, res) => {
+    try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    
+
         const prompt = "Generate a new, simple, friendly question about someone's personal life, under 10 words";
-    
+
         const result = await model.generateContent(prompt);
         console.log(result.response.text());
-        res.json(result.response.text());
+
+        res.json({ prompt: result.response.text() });
+    } catch (err) {
+        console.error("Error using Gemini API:", err);
+        return res.status(500).json({ message: "Error using Gemini API" });
     }
-    catch(err){
-        console.log(err);
-        return res.json({message:err});
-    }
-   
-})
+});
 
 module.exports = router;

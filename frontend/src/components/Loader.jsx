@@ -2,8 +2,9 @@ import React from 'react';
 import '../styles/Loader.css'
 function Loader(props) {
     return (
-        <div className='backdrop-blur min-h-screen grid place-content-center absolute w-full'>
-            <span class="loader"></span>
+        <div className='backdrop-blur h-56 m-auto grid place-content-center w-56'>
+            <span className="loader"></span>
+            <p className='text-secondary font-myfont2 mt-5'>Loading...</p>
         </div>
     );
 }

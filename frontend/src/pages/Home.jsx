@@ -5,19 +5,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Cards from '../components/Cards';
 import Loader from '../components/Loader';
 import { motion } from "framer-motion";
-function Home(props) {
-    const notify = (message) => toast(message, {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        closeButton: false,
-    });
 
+function Home() {
     const navigate = useNavigate();
     const [user, setUser] = useState({});
     const [messages, setMessages] = useState(null);
@@ -25,63 +14,88 @@ function Home(props) {
     const [isMessagesLoading, setIsMessagesLoading] = useState(true);
 
     const token = localStorage.getItem('token');
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+    };
 
+    // Toast notification
+    const notify = (message) => toast(message, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+        closeButton: false,
+    });
+
+    // Fetch User
     const fetchUser = async () => {
         setIsUserLoading(true);
+        if (!token) return navigate('/login');
+
         try {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-
-            const response = await fetch('http://localhost:8080/user/', {
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-            });
-
+            const response = await fetch('http://localhost:8080/user/', { headers });
             const data = await response.json();
+
             if (data.status === 200) {
-                setUser(data.response[0]);
+                console.log("user got --------->", data.user);
+                setUser(data.user);
             } else {
                 console.error("Error occurred: ", data);
             }
         } catch (err) {
-            console.error(err);
+            console.error("Fetch user error: ", err);
         } finally {
             setIsUserLoading(false);
         }
     };
 
+    // Fetch Messages
     const fetchMessages = async () => {
         setIsMessagesLoading(true);
+        if (!token) return navigate('/login');
+
         try {
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-
-            const response = await fetch('http://localhost:8080/user/message/getAll', {
-                method: 'GET',
-                headers: {
-                    'Content-type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-            });
-
+            const response = await fetch('http://localhost:8080/user/message/getAll', { headers });
             const data = await response.json();
+
             if (data.status === 200) {
-                setMessages(data.message);
+                console.log(data.messages);
+                setMessages(data.messages);
             } else {
-                console.error("Error occurred: ", data);
+                console.error("Error fetching messages: ", data);
             }
         } catch (err) {
-            console.error("Error occurred: ", err);
+            console.error("Fetch messages error: ", err);
         } finally {
             setIsMessagesLoading(false);
         }
+    };
+
+    // Delete All Messages
+    const deleteAll = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/user/deleteAll', {
+                method: 'POST',
+                headers,
+            });
+
+            const data = await response.json();
+            notify(data.message);
+            if (data.status === 200) 
+                setMessages(null)
+        } catch (err) {
+            console.error("Delete error: ", err);
+        }
+    };
+
+    // Copy Link to Clipboard
+    const handleLinkCopy = () => {
+        notify('Link copied to clipboard!');
+        navigator.clipboard.writeText(link);
     };
 
     useEffect(() => {
@@ -89,64 +103,60 @@ function Home(props) {
         fetchMessages();
     }, []);
 
-    const link = `http://localhost:3000/send/${user.id}`;
-
+    const link = `http://localhost:3000/send/${user.username}`;
     const name = user?.name?.split(' ')[0];
+    const isLoading = isUserLoading || isMessagesLoading;
 
     return (
-        <div className='bg-primary min-h-screen flex-col justify-center  py-5 px-10'>
-            <motion.h1
-                className="w-full text-right text-sm sm:text-xl font-myfont2 hover:cursor-pointer hover:text-secondary transition mt-4"
+        <div className='bg-primary min-h-screen flex-col justify-center py-5 px-10'>
+            <motion.button
+                className="w-fit text-right text-sm sm:text-xl font-myfont2 hover:cursor-pointer hover:text-primary transition mt-4 px-2 ml-[-80px] py-1 float-end"
                 onClick={() => {
                     localStorage.removeItem('token');
                     navigate('/login');
                 }}
-                animate={{opacity:1}}
-                initial={{opacity:0}}
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0,scale:1 }}
+                whileHover={{scale:1.2}}
             >
                 Logout
-            </motion.h1>
+            </motion.button>
 
-            {(isUserLoading || isMessagesLoading) === true ? <Loader /> :
-
+            {isLoading ? (
+                <Loader />
+            ) : (
                 <>
-
-                    <motion.div className="flex flex-col items-center justify-center h-[400px]"
-                        animate={{opacity:1}}
-                        initial={{opacity:0}}
+                    <motion.div
+                        className="flex flex-col items-center justify-center h-[400px]"
+                        animate={{ opacity: 1 }}
+                        initial={{ opacity: 0 }}
                     >
                         <h1 className="text-4xl sm:text-6xl font-semibold mb-4 text-center font-myfont2 text-secondary">
                             Hello, {name}
                         </h1>
-                        <div className="flex flex-col justify-center items-center mt-6 sm:mt-5 border border-secondary p-4 sm:p-6 w-11/12 sm:w-1/2 rounded-lg">
+                        <div className="flex flex-col justify-center items-center mt-6 sm:mt-5 border border-secondary p-4 sm:p-6 w-fit sm:w-1/2 rounded-lg hover:cursor-pointer bg-secondary text-primary transition 1s">
                             <motion.h1
                                 className="bg-secondary w-fit px-2 py-1 sm:px-4 sm:py-2 text-lg sm:text-2xl rounded text-primary hover:cursor-pointer transition-transform font-myfont"
-                                onClick={() => {
-                                    notify('Link copied to clipboard!');
-                                    navigator.clipboard.writeText(link);
-                                }}
-                                animate={{
-                                    scale: [1, 1.1, 1], // Keyframes for scaling
-                                }}
-                                transition={{
-                                    duration: 1.5, // Duration of one cycle (scale up and down)
-                                    repeat: Infinity, // Infinite repetition
-                                    ease: 'easeInOut', // Smooth easing
-                                }}
+                                onClick={handleLinkCopy}
+                                animate={{ scale: [1, 1.1, 1] }}
+                                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
                             >
                                 {link}
                             </motion.h1>
-
                             <p className="text-center font-myfont2 text-base sm:text-base mt-2">
                                 Click on the link
                             </p>
-
                         </div>
                     </motion.div>
 
-
-                    <div className=''>
-                        <h1 className='text-center sm:text-left text-3xl font-myfont2 mt-5'>Your messages :</h1>
+                    <div>
+                        <div className='flex flex-col sm:flex-row justify-between items-center'>
+                            <div>
+                                <h1 className='text-center sm:text-left text-3xl font-myfont2 mt-5'>Your messages </h1>
+                                <p className='font-myfont2'>Click on the messages to download</p>
+                            </div>
+                            <button className='mt-5 sm:mt-0 font-myfont2' onClick={deleteAll}>Delete all</button>
+                        </div>
 
                         <motion.div
                             className="flex gap-5 mt-5 flex-wrap justify-center sm:justify-start"
@@ -155,20 +165,17 @@ function Home(props) {
                             variants={{
                                 hidden: {},
                                 visible: {
-                                    transition: {
-                                        staggerChildren: 0.2,
-                                    },
+                                    transition: { staggerChildren: 0.2 },
                                 },
                             }}
-
                         >
-
-                            {messages && messages.map((item, index) => <Cards key={index} data={item} />)}
+                            {messages?.slice().reverse().map((item, index) => (
+                                <Cards key={index} data={item} />
+                            ))}
                         </motion.div>
                     </div>
                 </>
-
-            }
+            )}
             <ToastContainer />
         </div>
     );

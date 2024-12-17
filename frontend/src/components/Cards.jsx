@@ -3,6 +3,7 @@ import { MdOutlineClose } from "react-icons/md";
 import { MdDownload } from "react-icons/md";
 import { toPng } from 'html-to-image';
 import { motion } from "framer-motion";
+import paper from '../images/paper.png'
 function Cards({ data }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const modalRef = useRef(null);
@@ -41,54 +42,73 @@ function Cards({ data }) {
         <>
             {/* Card */}
             <motion.div
-
-             
                 onClick={handleCardClick}
-                className={`shadow-slate-800 relative bg-secondary p-5 w-full sm:w-72 h-24 sm:h-52 overflow-hidden text-center text-primary rounded flex flex-wrap items-center hover:cursor-pointer shadow-md transition-transform transform hover:scale-105 duration-300 ${
-                    isModalOpen ? 'hidden' : ''
-                }`}
+                className={`relative bg-transparent p-6 w-full sm:w-72 h-52 sm:h-52 overflow-hidden text-center text-primary rounded flex flex-col items-center justify-center hover:cursor-pointer transition-transform transform hover:scale-105 duration-300 ${isModalOpen ? 'hidden' : ''}`}
                 variants={{
                     hidden: { opacity: 0, y: 50 },
                     visible: { opacity: 1, y: 0, scale: 1 },
                 }}
-
-                whileHover ={{scale:1.05}}
+                whileHover={{ scale: 1.05 }}
             >
-                <h1 className='m-auto overflow-hidden w-full text-primary text-lg sm:text-2xl font-myfont2 line-clamp-3'>
+                {/* Image with shadow */}
+                <img
+                    src={paper}  // Replace with the actual path to your image
+                    alt="Card background"
+                    className="object-contain absolute inset-0 h-full w-full shadow-black z-0"
+                />
+
+                {/* Text content */}
+                <h1 className='ml-8 m-auto text-primary text-lg sm:text-2xl font-myfont2 line-clamp-3 z-10 relative px-4'
+                style={{ fontFamily: 'Sour Gummy, sans-serif' }}
+                >
                     {data.message}
                 </h1>
 
-                <div className='bg-secondary w-full absolute bottom-0 left-0 h-4 sm:h-12 opacity-55 backdrop-blur-lg'></div>
+                {/* Overlay */}
 
             </motion.div>
+
+
 
             {isModalOpen && (
                 <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
                     <div
                         ref={modalRef}
                         onClick={(e) => e.stopPropagation()}
-                        className="bg-secondary text-primary p-6 sm:p-10 rounded-lg w-11/12 max-w-3xl flex flex-col items-center justify-start transform transition-all duration-300 relative shadow-xl flex-wrap"
-                    >
-                        <h1 className="mt-5 text-xl sm:text-3xl font-myfont2 text-wrap text-center break-words">
-                            {data.message}
-                        </h1>
+                        className={`h-96 px-10 sm:p-10 rounded-lg w-11/12 max-w-3xl flex flex-col items-center justify-start transform transition-all duration-300 relative shadow-xl flex-wrap bg-transparent `}
 
+                    >
+                        {/* Image as background */}
+                       
+                            <img
+                                src={paper}  // Replace with the actual path to your image
+                                alt="Card background"
+                                className="object-contain absolute inset-0 h-full w-full m-auto shadow-lg z-0"
+                            />
+
+                            {/* Text content */}
+                            <h1 className="mt-32 sm:mt-12 ml-2   text-primary text-xl sm:text-3xl font-myfont2 text-wrap text-center break-words z-10 relative px-6 w-56 sm:w-96"
+                            style={{ fontFamily: 'Sour Gummy, sans-serif' }}
+                            >
+                                {data.message}
+                            </h1>
+                     
+
+                        {/* Download Icon */}
                         <MdDownload
                             onClick={handleDownload}
-                            className={`absolute top-4 left-4 text-3xl sm:text-4xl text-white p-1 sm:p-2 rounded hover:cursor-pointer hover:scale-110 transition-transform ${
-                                hideIcons ? 'hidden' : ''
-                            }`}
+                            className={`absolute top-4 left-4 text-6xl sm:text-6xl text-primary p-1 sm:p-2 rounded hover:cursor-pointer hover:scale-110 transition-transform ${hideIcons ? 'hidden' : ''}`}
                         />
 
+                        {/* Close Icon */}
                         <MdOutlineClose
                             onClick={closeModal}
-                            className={`absolute top-4 right-4 text-3xl sm:text-4xl text-white p-1 sm:p-2 rounded hover:cursor-pointer hover:scale-110 transition-transform ${
-                                hideIcons ? 'hidden' : ''
-                            }`}
+                            className={`absolute top-4 right-4 text-6xl sm:text-6xl text-primary p-1 sm:p-2 rounded hover:cursor-pointer hover:scale-110 transition-transform ${hideIcons ? 'hidden' : ''}`}
                         />
                     </div>
                 </div>
             )}
+
         </>
     );
 }
