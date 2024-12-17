@@ -41,7 +41,7 @@ function Register(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch('https://anonymous-messaging-app-ashy.vercel.app/auth/register', {
+        fetch('https://anonymous-messaging-app-myu7.onrender.com/auth/register', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'

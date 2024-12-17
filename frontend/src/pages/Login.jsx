@@ -40,7 +40,7 @@ function Login(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        fetch('https://anonymous-messaging-app-ashy.vercel.app/auth/login', {
+        fetch('https://anonymous-messaging-app-myu7.onrender.com/auth/login', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
