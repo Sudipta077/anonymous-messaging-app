@@ -26,7 +26,7 @@ function Message(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            fetch(`http://localhost:8080/user/message/${params.username}`, {
+            fetch(`https://anonymous-messaging-app-ashy.vercel.app/user/message/${params.username}`, {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json'
@@ -62,7 +62,7 @@ function Message(props) {
 
     const fetchSuggestions = async () => {
         try {
-            fetch('http://localhost:8080/user/api/gemini', {
+            fetch('https://anonymous-messaging-app-ashy.vercel.app/user/api/gemini', {
                 method: 'GET',
             })
                 .then(response => response.json())

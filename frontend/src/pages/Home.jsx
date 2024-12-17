@@ -37,7 +37,7 @@ function Home() {
         if (!token) return navigate('/login');
 
         try {
-            const response = await fetch('http://localhost:8080/user/', { headers });
+            const response = await fetch('https://anonymous-messaging-app-ashy.vercel.app/user/', { headers });
             const data = await response.json();
 
             if (data.status === 200) {
@@ -59,7 +59,7 @@ function Home() {
         if (!token) return navigate('/login');
 
         try {
-            const response = await fetch('http://localhost:8080/user/message/getAll', { headers });
+            const response = await fetch('https://anonymous-messaging-app-ashy.vercel.app/user/message/getAll', { headers });
             const data = await response.json();
 
             if (data.status === 200) {
@@ -78,7 +78,7 @@ function Home() {
     // Delete All Messages
     const deleteAll = async () => {
         try {
-            const response = await fetch('http://localhost:8080/user/deleteAll', {
+            const response = await fetch('https://anonymous-messaging-app-ashy.vercel.app/user/deleteAll', {
                 method: 'POST',
                 headers,
             });
@@ -103,7 +103,7 @@ function Home() {
         fetchMessages();
     }, []);
 
-    const link = `http://localhost:3000/send/${user.username}`;
+    const link = `https://anonymous-messaging-app-ashy.vercel.app/send/${user.username}`;
     const name = user?.name?.split(' ')[0];
     const isLoading = isUserLoading || isMessagesLoading;
 
