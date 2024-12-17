@@ -46,6 +46,7 @@ function Register(props) {
             headers: {
                 'Content-type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify(form)
         })
             .then(response => response.json())
