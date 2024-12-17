@@ -12,7 +12,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT
+const PORT = 8080
 
 app.get('/',(req,res)=>{
     res.send("Hello")
