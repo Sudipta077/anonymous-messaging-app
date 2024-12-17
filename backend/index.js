@@ -24,6 +24,4 @@ app.use('/user', userRoute);
 
 
 
-app.listen(PORT, () => {
-    console.log("App is listening at port :" + PORT);
-})
+module.exports = app;
