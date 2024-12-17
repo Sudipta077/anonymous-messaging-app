@@ -73,12 +73,12 @@ function Login(props) {
     return (
         <div className="bg-primary min-h-screen sm:grid sm:place-content-center px-0 sm:px-0">
 
-            <h1 className='font-myfont text-secondary text-2xl sm:text-4xl p-5 sm:p-0'>Login</h1>
+            <h1 className='font-myfont text-secondary text-4xl sm:text-4xl p-5 sm:p-0'>Login</h1>
 
             <div className='sm:border-r-8 sm:border-b-8 bg-primary items-center flex flex-col sm:flex-row sm:w-[500px] md:w-[750px] w-full h-fit p-0 sm:p-0 sm:border border-secondary mt-5 rounded backdrop-blur-lg justify-center'>
 
-                <div className='h-56 sm:h-96 w-full sm:w-96 rounded-2xl'>
-                    <img src={image} alt="" className='h-56 sm:h-96 w-full sm:w-96 object-cover rounded' />
+                <div className='h-56 sm:h-96 w-full px-5 sm:w-96 rounded-2xl'>
+                    <img src={image} alt="" className='h-56 sm:h-96 w-full sm:w-full object-cover rounded' />
                 </div>
 
                 <form action="" onSubmit={handleSubmit} className=' mt-5 sm:mt-0 w-full sm:w-[40%] p-5 ml-0 sm:ml-10'>
@@ -87,7 +87,7 @@ function Login(props) {
 
                     <div className='relative mt-5'>
                         <label htmlFor="username" className='px-1 font-myfont2 absolute top-[-10px] left-4 text-lg sm:text-xl text-secondary bg-primary'>Username</label>
-                        <input required onChange={handleChange} name="username" type="text" className=" mt-2 focus:outline-none w-full rounded p-2 text-base sm:text-xl text-secondary bg-primary border border-secondary" />
+                        <input autoComplete='off' required onChange={handleChange} name="username" type="text" className=" mt-2 focus:outline-none w-full rounded p-2 text-base sm:text-xl text-secondary bg-primary border border-secondary" />
                     </div>
 
                     <div className="relative mt-5">

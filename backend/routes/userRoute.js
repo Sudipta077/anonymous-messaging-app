@@ -93,13 +93,10 @@ router.post('/deleteAll', async (req, res) => {
             return res.status(404).json({status:404, message: 'No messages found.' });
         }
 
-
-
-
-
     }
     catch (err) {
         console.log("Error --->", err);
+        return res.status(500).json({ status: 500, message: "Error deleting messages." });
     }
 })
 
@@ -119,7 +116,7 @@ router.get('/api/gemini', async (req, res) => {
         const result = await model.generateContent(prompt);
         console.log(result.response.text());
 
-        res.json({ prompt: result.response.text() });
+        res.status(200).json({ prompt: result.response.text() });
     } catch (err) {
         console.error("Error using Gemini API:", err);
         return res.status(500).json({ message: "Error using Gemini API" });
