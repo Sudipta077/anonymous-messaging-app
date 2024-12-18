@@ -33,7 +33,9 @@ router.post('/register', async (req, res) => {
 // Login Endpoint
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-
+    if(!user || !password){
+        return res.status(400).json({status:400,message:"Couldn't get username or password"});
+    }
     try {
         // Find the user by username
         const user = await User.findOne({ username }, { timeout: 5000 });
