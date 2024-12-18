@@ -9,14 +9,10 @@ const connectDB = require('./config/dbconfig');
 
 connectDB();
 
-const corsOptions = {
-    origin: 'https://secret-messaging-plum.vercel.app', 
-    methods: 'GET,POST,PUT,DELETE', 
-    allowedHeaders: 'Content-Type,Authorization', 
-  };
+
   
   // Use the CORS middleware with the defined options
-  app.use(cors(corsOptions));
+  app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 10000
