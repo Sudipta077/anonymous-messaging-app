@@ -26,7 +26,7 @@ function Message(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            fetch(`https://anonymous-messaging-app-ashy.vercel.app/user/message/${params.username}`, {
+            fetch(`https://anonymous-messaging-app-myu7.onrender.com/user/message/${params.username}`, {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json'
@@ -62,7 +62,7 @@ function Message(props) {
 
     const fetchSuggestions = async () => {
         try {
-            fetch('https://anonymous-messaging-app-ashy.vercel.app/user/api/gemini', {
+            fetch('https://anonymous-messaging-app-myu7.onrender.com/user/api/gemini', {
                 method: 'GET',
             })
                 .then(response => response.json())
@@ -96,7 +96,7 @@ function Message(props) {
 
     return (
         <div className='bg-primary min-h-screen grid place-content-center px-2'>
-            <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-2'>
+            <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-2 px-2'>
                 <input
                     required
                     type="text"

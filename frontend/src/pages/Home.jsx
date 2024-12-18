@@ -34,7 +34,7 @@ function Home() {
     // Fetch User
     const fetchUser = async () => {
         setIsUserLoading(true);
-        if (!token) return navigate('/login');
+        // if (!token) return navigate('/login');
 
         try {
             const response = await fetch('https://anonymous-messaging-app-myu7.onrender.com/user/', { headers });
@@ -56,7 +56,7 @@ function Home() {
     // Fetch Messages
     const fetchMessages = async () => {
         setIsMessagesLoading(true);
-        if (!token) return navigate('/login');
+        // if (!token) return navigate('/login');
 
         try {
             const response = await fetch('https://anonymous-messaging-app-myu7.onrender.com/user/message/getAll', { headers });
@@ -136,7 +136,7 @@ function Home() {
                         </h1>
                         <div className="flex flex-col justify-center items-center mt-6 sm:mt-5 border border-secondary p-4 sm:p-6 w-fit sm:w-1/2 rounded-lg hover:cursor-pointer bg-secondary text-primary transition 1s">
                             <motion.h1
-                                className="bg-secondary w-fit px-2 py-1 sm:px-4 sm:py-2 text-lg sm:text-2xl rounded text-primary hover:cursor-pointer transition-transform font-myfont"
+                                className="bg-secondary text-center w-fit px-2 py-1 sm:px-4 sm:py-2 text-lg sm:text-2xl rounded text-primary hover:cursor-pointer transition-transform font-myfont"
                                 onClick={handleLinkCopy}
                                 animate={{ scale: [1, 1.1, 1] }}
                                 transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -155,10 +155,14 @@ function Home() {
                                 <h1 className='text-center sm:text-left text-3xl font-myfont2 mt-5'>Your messages </h1>
                                 <p className='font-myfont2'>Click on the messages to download</p>
                             </div>
-                            <button className={`mt-5 sm:mt-0 font-myfont2`} onClick={deleteAll}>Delete all</button>
+                            <button className={`${messages===null?'hidden':''} mt-5 sm:mt-0 font-myfont2`} onClick={deleteAll}>Delete all</button>
                         </div>
 
-                        <motion.div
+                        {
+                            messages === null ? 
+                                <h1 className='font-myfont2 text-secondary w-full text-2xl sm:text-4xl'>You don't have any messages...</h1>
+                            :
+                            <motion.div
                             className="flex gap-5 mt-5 flex-wrap justify-center sm:justify-start"
                             initial="hidden"
                             animate="visible"
@@ -173,6 +177,9 @@ function Home() {
                                 <Cards key={index} data={item} />
                             ))}
                         </motion.div>
+                            
+                        }
+                        
                     </div>
                 </>
             )}
