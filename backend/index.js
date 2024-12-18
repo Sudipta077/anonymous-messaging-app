@@ -10,9 +10,9 @@ const connectDB = require('./config/dbconfig');
 connectDB();
 
 const corsOptions = {
-    origin: 'https://secret-messaging-plum.vercel.app', // Allow requests from this domain
-    methods: 'GET,POST,PUT,DELETE', // Allow specific methods
-    allowedHeaders: 'Content-Type,Authorization', // Allow specific headers
+    origin: 'https://secret-messaging-plum.vercel.app', 
+    methods: 'GET,POST,PUT,DELETE', 
+    allowedHeaders: 'Content-Type,Authorization', 
   };
   
   // Use the CORS middleware with the defined options
