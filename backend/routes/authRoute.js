@@ -33,7 +33,8 @@ router.post('/register', async (req, res) => {
 // Login Endpoint
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    if(!user || !password){
+    if(!username || !password){
+        console.log("Couldn't get username or password");
         return res.status(400).json({status:400,message:"Couldn't get username or password"});
     }
     try {
