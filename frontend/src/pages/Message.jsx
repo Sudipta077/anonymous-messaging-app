@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { data, useParams } from 'react-router-dom';
+import { data, useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 
 function Message(props) {
@@ -9,6 +9,7 @@ function Message(props) {
     const dice = useRef();
     const [suggestion, setSuggestion] = useState("");
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     console.log(text);
 
@@ -105,7 +106,10 @@ function Message(props) {
         setText(suggestion)
     }
 
+
     return (
+        <div className='bg-primary'>
+        <h1 className='bg-secondary sm:w-fit w-full m-auto text-4xl font-myfont text-center p-5 hover:cursor-pointer text-primary hover:scale-105 transition' onClick={()=>navigate('/register')}>Create Your Account</h1>
         <div className='bg-primary min-h-screen grid place-content-center px-2'>
             <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-2 px-2'>
                 <input
@@ -143,6 +147,7 @@ function Message(props) {
 
             </div>
             <ToastContainer />
+        </div>
         </div>
     );
 }
