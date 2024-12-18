@@ -103,7 +103,7 @@ function Home() {
         fetchMessages();
     }, []);
 
-    const link = `https://anonymous-messaging-app-myu7.onrender.com/send/${user.username}`;
+    const link = `https://anonymous-messaging-app-pied.vercel.app/send/${user.username}`;
     const name = user?.name?.split(' ')[0];
     const isLoading = isUserLoading || isMessagesLoading;
 
@@ -155,7 +155,7 @@ function Home() {
                                 <h1 className='text-center sm:text-left text-3xl font-myfont2 mt-5'>Your messages </h1>
                                 <p className='font-myfont2'>Click on the messages to download</p>
                             </div>
-                            <button className='mt-5 sm:mt-0 font-myfont2' onClick={deleteAll}>Delete all</button>
+                            <button className={`mt-5 sm:mt-0 font-myfont2`} onClick={deleteAll}>Delete all</button>
                         </div>
 
                         <motion.div
