@@ -10,7 +10,7 @@ const connectDB = require('./config/dbconfig');
 connectDB();
 
 const corsOptions = {
-  origin: 'https://secret-messaging-plum.vercel.app', // Explicitly specify your frontend URL
+  origin: 'https://anonymous-messaging-app-pied.vercel.app', // Explicitly specify your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   credentials: true, // Allow cookies and credentials
