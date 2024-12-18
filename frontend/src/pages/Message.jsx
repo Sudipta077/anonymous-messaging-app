@@ -117,6 +117,7 @@ function Message(props) {
                     placeholder='Write message'
                     maxLength="100"
                 />
+
                 <button type='submit' className='bg-secondary text-primary w-full sm:w-24 sm:h-full font-myfont2'>Send</button>
             </form>
 
@@ -124,7 +125,7 @@ function Message(props) {
             <p className='my-5 font-myfont2 text-secondary'>Some suggestions for you. Click to use it.</p>
             <div className='flex flex-col-reverse sm:flex-row justify-between items-center gap-x-5 '>
 
-                {suggestion && loading===false ?
+                {suggestion || loading===false ?
                     <p className='mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl w-96' onClick={handleCopy}>{suggestion}</p>
                     :
                     <span className="mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl ">Loading...</span>

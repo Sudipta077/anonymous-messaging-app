@@ -122,7 +122,7 @@ function Home() {
                 Logout
             </motion.button>
 
-            {isLoading ===false? (
+            {isLoading === true ? (
                 <Loader />
             ) : (
                 <>
