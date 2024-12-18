@@ -6,6 +6,7 @@ import { GoEye } from "react-icons/go";
 import { GoEyeClosed } from "react-icons/go";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../components/Loader';
 
 function Login(props) {
 
@@ -28,6 +29,7 @@ function Login(props) {
         password: ""
     });
     const [eye, setEye] = useState(false);
+    const [loading, setLoading] = useState(false);
 
 
     const handleChange = (e) => {
@@ -40,6 +42,7 @@ function Login(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         fetch('https://anonymous-messaging-app-myu7.onrender.com/auth/login', {
             method: 'POST',
             headers: {
@@ -50,6 +53,7 @@ function Login(props) {
         })
             .then(response => response.json())
             .then(data => {
+                setLoading(false)
                 if (data.status === 200) {
                     console.log("Successfully Logged in.");
                     console.log(data.token);
@@ -68,7 +72,9 @@ function Login(props) {
                     console.log("Error occurred: ", data);
                 }
             })
-            .catch(err => console.log("Error occurred: ", err));
+            .catch(err => {
+                setLoading(false); 
+                console.log("Error occurred: ", err)});
     };
 
     return (
@@ -105,7 +111,13 @@ function Login(props) {
                         </div>
                     </div>
 
-                    <button type='submit' className='w-full mt-5 font-myfont2 '>Login</button>
+                    {loading ? (
+                        <div className="flex justify-center mt-5">
+                                <Loader/>
+                        </div>
+                    ) : (
+                        <button type='submit' className='w-full mt-5 font-myfont2'>Login</button>
+                    )}
 
                     <h1 className='font-myfont2'>Don't have account ?
                         <Link to='/register' className='text-secondary font-semibold'> Sign-up</Link>

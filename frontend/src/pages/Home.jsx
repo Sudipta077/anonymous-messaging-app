@@ -34,7 +34,7 @@ function Home() {
     // Fetch User
     const fetchUser = async () => {
         setIsUserLoading(true);
-        // if (!token) return navigate('/login');
+        if (!token) return navigate('/login');
 
         try {
             const response = await fetch('https://anonymous-messaging-app-myu7.onrender.com/user/', { headers });
@@ -56,7 +56,7 @@ function Home() {
     // Fetch Messages
     const fetchMessages = async () => {
         setIsMessagesLoading(true);
-        // if (!token) return navigate('/login');
+        if (!token) return navigate('/login');
 
         try {
             const response = await fetch('https://anonymous-messaging-app-myu7.onrender.com/user/message/getAll', { headers });
@@ -122,7 +122,7 @@ function Home() {
                 Logout
             </motion.button>
 
-            {isLoading ? (
+            {isLoading ===false? (
                 <Loader />
             ) : (
                 <>

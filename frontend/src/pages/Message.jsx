@@ -8,23 +8,26 @@ function Message(props) {
     const params = useParams();
     const dice = useRef();
     const [suggestion, setSuggestion] = useState("");
+    const [loading, setLoading] = useState(false);
+
     console.log(text);
 
 
-        const notify = (message) => toast(message, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            closeButton: false,
-        });
+    const notify = (message) => toast(message, {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        closeButton: false,
+    });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             fetch(`https://anonymous-messaging-app-myu7.onrender.com/user/message/${params.username}`, {
                 method: 'POST',
@@ -35,6 +38,7 @@ function Message(props) {
             })
                 .then(response => response.json())
                 .then(data => {
+                    setLoading(false)
                     if (data.status === 200) {
                         notify(data.message);
                         setText("");
@@ -43,7 +47,10 @@ function Message(props) {
                         console.log("Error occurred : ", data);
                     }
                 })
-                .catch(err => console.log("Error occurred : ", err));
+                .catch(err => {
+                    setLoading(false)
+                    console.log("Error occurred : ", err)
+                });
         } catch (err) {
             console.log(err);
         }
@@ -61,12 +68,15 @@ function Message(props) {
     };
 
     const fetchSuggestions = async () => {
+        setLoading(true);
         try {
             fetch('https://anonymous-messaging-app-myu7.onrender.com/user/api/gemini', {
                 method: 'GET',
             })
                 .then(response => response.json())
                 .then(data => {
+                    setLoading(false);
+
                     if (data && data.prompt) { // Assuming 'prompt' is the key you want
                         setSuggestion(data.prompt); // Set only the string value
                     } else {
@@ -75,6 +85,7 @@ function Message(props) {
                     }
                 })
                 .catch(err => {
+                    setLoading(false)
                     console.error("Error fetching suggestions: ", err);
                     setSuggestion("Failed to load suggestions.");
                 });
@@ -83,7 +94,7 @@ function Message(props) {
             setSuggestion("Failed to load suggestions.");
         }
     };
-    
+
 
     useEffect(() => {
         fetchSuggestions();
@@ -113,7 +124,7 @@ function Message(props) {
             <p className='my-5 font-myfont2 text-secondary'>Some suggestions for you. Click to use it.</p>
             <div className='flex flex-col-reverse sm:flex-row justify-between items-center gap-x-5 '>
 
-                {suggestion ?
+                {suggestion && loading===false ?
                     <p className='mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl w-96' onClick={handleCopy}>{suggestion}</p>
                     :
                     <span className="mt-5 sm:mt-0 hover:cursor-pointer font-myfont2 text-primary p-2 rounded bg-secondary text-2xl ">Loading...</span>
@@ -129,7 +140,7 @@ function Message(props) {
 
 
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     );
 }
