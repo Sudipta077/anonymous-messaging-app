@@ -39,7 +39,7 @@ router.post('/login', async (req, res) => {
     }
     try {
         // Find the user by username
-        const user = await User.findOne(username);
+        const user = await User.findOne({username});
         if (!user) {
             return res.status(400).json({ status: 400, message: "You don't have any account registered!" });
         }
